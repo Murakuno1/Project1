@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corujão - Painel Administrativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e, #16213e);
+            border-right: 1px solid rgba(255, 140, 0, 0.2);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 30px 25px;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff8c00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .logo::before {
+            content: '🦉';
+            font-size: 2.5rem;
+            animation: owlBlink 3s infinite;
+        }
+
+        @keyframes owlBlink {
+
+            0%,
+            90%,
+            100% {
+                opacity: 1;
+            }
+
+            95% {
+                opacity: 0.3;
+            }
+        }
+
+        .admin-title {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 15px 25px;
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(255, 140, 0, 0.1);
+            border-left-color: #ff8c00;
+            color: #ff8c00;
+        }
+
+        .nav-item::before {
+            content: attr(data-icon);
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+            min-height: 100vh;
+            background: radial-gradient(circle at 30% 40%, #1a1a2e 0%, #16213e 35%, #0a0a0a 100%);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff8c00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 140, 0, 0.1);
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff8c00, #ff4500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ff4500);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 140, 0, 0.2);
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .stats-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+
+        .stats-trend {
+            font-size: 0.9rem;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .trend-down {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .stats-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ff8c00;
+            margin-bottom: 5px;
+        }
+
+        .stats-label {
+            color: #888;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content-section {
+            background: linear-gradient(135deg, #1e1e1e, #2a2a2a);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff8c00;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff8c00, #ff4500);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ff8c00;
+            border: 1px solid #ff8c00;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.1);
+        }
+
+        .data-table th {
+            background: rgba(255, 140, 0, 0.1);
+            color: #ff8c00;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 140, 0, 0.05);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+
+        .status-preparing {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+        }
+
+        .status-ready {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-delivered {
+            background: rgba(156, 39, 176, 0.2);
+            color: #9c27b0;
+        }
+
+        .priority-high {
+            color: #f44336;
+            font-weight: 700;
+        }
+
+        .priority-medium {
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .priority-low {
+            color: #4caf50;
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quick-action {
+            background: linear-gradient(135deg, rgba(255, 140, 0, 0.1), rgba(255, 69, 0, 0.1));
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 140, 0, 0.2);
+            border-color: rgba(255, 140, 0, 0.4);
+        }
+
+        .quick-action-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 140, 0, 0.1);
+        }
+
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+
+        .expense-info {
+            flex: 1;
+        }
+
+        .expense-name {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .expense-category {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .expense-amount {
+            font-weight: 700;
+            color: #ff8c00;
+            font-size: 1.1rem;
+        }
+
+        .chart-container {
+            padding: 30px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-style: italic;
+        }
+
+        .kitchen-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .kitchen-column {
+            background: rgba(255, 140, 0, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+        }
+
+        .column-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 140, 0, 0.2);
+        }
+
+        .column-title {
+            font-weight: 700;
+            color: #ff8c00;
+            margin-bottom: 5px;
+        }
+
+        .column-count {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .order-card {
+            background: linear-gradient(135deg, #2a2a2a, #1e1e1e);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .order-number {
+            font-weight: 700;
+            color: #ff8c00;
+        }
+
+        .order-time {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .order-items {
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            color: #ccc;
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-total {
+            font-weight: 700;
+            color: #ff8c00;
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: linear-gradient(45deg, #ff8c00, #ff4500);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 20px 20px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kitchen-board {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">CORUJÃO</div>
+            <div class="admin-title">Painel Admin</div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#dashboard" class="nav-item active" data-icon="📊" onclick="showSection('dashboard')">Dashboard</a>
+            <a href="pedidos.html" class="nav-item" data-icon="📋" onclick="showSection('orders')">Pedidos</a>
+            <a href="kitchen.html" class="nav-item" data-icon="👨‍🍳" onclick="showSection('kitchen')">Cozinha</a>
+            <a href="#expenses" class="nav-item" data-icon="💰" onclick="showSection('expenses')">Gastos</a>
+            <a href="#menu" class="nav-item" data-icon="🍽️" onclick="showSection('menu')">Cardápio</a>
+            <a href="#reports" class="nav-item" data-icon="📈" onclick="showSection('reports')">Relatórios</a>
+            <a href="#settings" class="nav-item" data-icon="⚙️" onclick="showSection('settings')">Configurações</a>
+            <a href="index.html" class="nav-item" data-icon="◀️" onclick="showSection('settings')">Voltar</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <h1 class="page-title" id="pageTitle">Dashboard</h1>
+            <div class="user-info">
+                <div class="user-avatar">🦉</div>
+                <div>
+                    <div style="font-weight: 600;">Admin</div>
+                    <div style="font-size: 0.9rem; color: #888;">Gerente</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-area">
+            <div class="dashboard-grid">
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <div class="stats-icon">💰</div>
+                        <div class="stats-trend trend-up">+12%</div>
+                    </div>
+                    <div class="stats-value">R$ 2.845</div>
+                    <div class="stats-label">Faturamento Hoje</div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <div class="stats-icon">📦</div>
+                        <div class="stats-trend trend-up">+8%</div>
+                    </div>
+                    <div class="stats-value">127</div>
+                    <div class="stats-label">Pedidos Hoje</div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <div class="stats-icon">⏱️</div>
+                        <div class="stats-trend trend-down">-5min</div>
+                    </div>
+                    <div class="stats-value">23min</div>
+                    <div class="stats-label">Tempo Médio</div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <div class="stats-icon">⭐</div>
+                        <div class="stats-trend trend-up">+0.2</div>
+                    </div>
+                    <div class="stats-value">4.8</div>
+                    <div class="stats-label">Avaliação</div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action" onclick="showSection('orders')">
+                    <span class="quick-action-icon">📋</span>
+                    <div>Novo Pedido</div>
+                </div>
+                <div class="quick-action" onclick="showSection('kitchen')">
+                    <span class="quick-action-icon">👨‍🍳</span>
+                    <div>Ver Cozinha</div>
+                </div>
+                <div class="quick-action" onclick="showSection('expenses')">
+                    <span class="quick-action-icon">💰</span>
+                    <div>Registrar Gasto</div>
+                </div>
+                <div class="quick-action" onclick="showSection('reports')">
+                    <span class="quick-action-icon">📊</span>
+                    <div>Relatórios</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3 class="section-title">Pedidos Recentes</h3>
+                    <a href="#" class="btn btn-secondary">Ver Todos</a>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Itens</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#001247</strong></td>
+                                <td>João Silva</td>
+                                <td>2x Corujão Especial</td>
+                                <td><strong>R$ 39,80</strong></td>
+                                <td><span class="status-badge status-preparing">Preparando</span></td>
+                                <td>23:45</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#001246</strong></td>
+                                <td>Maria Santos</td>
+                                <td>1x Frango da Madrugada</td>
+                                <td><strong>R$ 16,90</strong></td>
+                                <td><span class="status-badge status-ready">Pronto</span></td>
+                                <td>23:42</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#001245</strong></td>
+                                <td>Carlos Lima</td>
+                                <td>1x Costela do Coruja</td>
+                                <td><strong>R$ 23,90</strong></td>
+                                <td><span class="status-badge status-delivered">Entregue</span></td>
+                                <td>23:38</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders-section" class="content-area" style="display: none;">
+            <div class="content-section">
+                <div class="section-header">
+                    <h3 class="section-title">Gerenciar Pedidos</h3>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary">Filtrar</button>
+                        <button class="btn btn-primary">Novo Pedido</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Pedido</th>
+                                <th>Cliente</th>
+                                <th>Telefone</th>
+                                <th>Endereço</th>
+                                <th>Itens</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#001247</strong></td>
+                                <td>João Silva</td>
+                                <td>(11) 99999-0001</td>
+                                <td>Rua A, 123</td>
+                                <td>2x Corujão Especial</td>
+                                <td><strong>R$ 39,80</strong></td>
+                                <td><span class="status-badge status-pending">Pendente</span></td>
+                                <td>
+                                    <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem;">Confirmar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#001246</strong></td>
+                                <td>Maria Santos</td>
+                                <td>(11) 99999-0002</td>
+                                <td>Av. B, 456</td>
+                                <td>1x Frango da Madrugada</td>
+                                <td><strong>R$ 16,90</strong></td>
+                                <td><span class="status-badge status-preparing">Preparando</span></td>
+                                <td>
+                                    <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;">Detalhes</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kitchen Section -->
+        <div id="kitchen-section" class="content-area" style="display: none;">
+            <div class="content-section">
+                <div class="section-header">
+                    <h3 class="section-title">Controle da Cozinha</h3>
+                    <div class="section-actions">
+                        <button class="btn btn-secondary">Atualizar</button>
+                    </div>
+                </div>
+                <div class="kitchen-board">
+                    <div class="kitchen-column">
+                        <div class="column-header">
+                            <div class="column-title">Novos Pedidos</div>
+                            <div class="column-count">3 pedidos</div>
+                        </div>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-number">#001247</div>
+                                <div class="order-time">23:45</div>
+                            </div>
+                            <div class="order-items">
+                                <div class="order-item">2x Corujão Especial</div>
+                                <div class="order-item">1x Refrigerante</div>
+                            </div>
+                            <div class="order-footer">
+                                <div class="order-total">R$ 39,80</div>
+                                <span class="priority-high">URGENTE</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kitchen-column">
+                        <div class="column-header">
+                            <div class="column-title">Preparando</div>
+                            <div class="column-count">2 pedidos</div>
+                        </div>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-number">#001246</div>
+                                <div class="order-time">23:42</div>
+                            </div>
+                            <div class="order-items">
+                                <div class="order-item">1x Frango da Madrugada</div>
+                            </div>
+                            <div class="order-footer">
+                                <div class="order-total">R$ 16,90</div>
+                                <span class="priority-medium">MÉDIO</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kitchen-column">
+                        <div class="column-header">
+                            <div class="column-title">Prontos</div>
+                            <div class="column-count">1 pedido</div>
+                        </div>
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div class="order-number">#001245</div>
+                                <div class="order-time">23:35</div>
+                            </div>
+                            <div class="order-items">
+                                <div class="order-item">1x Costela do Coruja</div>
+                            </div>
+                            <div class="order-footer">
+                                <div class="order-total">R$ 23,90</div>
+                                <span class="priority-low">BAIXO</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expenses Section -->
+        <div id="expenses-section" class="content-area" style="display: none;">
+            <div class="dashboard-grid" style="margin-bottom: 30px;">
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <div class="stats-icon">📊</div>
+                        <div class="stats-trend trend-up">Este mês</div>
+                    </div>
+                    <div class="stats-value">R$ 8.450</div>
+                    <div class="stats-label">Total de Gastos</div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <div class="stats-icon">🛒</div>
+                        <div class="stats-trend trend-down">-8%</div>
+                    </div>
+                    <div class="stats-value">R$ 3.200</div>
+                    <div class="stats-label">Ingredientes</div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-header">
+                        <div class="stats-icon">⚡</div>
+                        <div class="stats-trend trend-up">+5%</div>
+                    </div>
+                    <div class="stats-value">R$ 890</div>
+                    <div class="stats-label">Energia/Gás</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="section-header">
+                    <h3 class="section-title">Controle de Gastos</h3>
+                    <div class="section-actions">
+                        <button class="btn btn-primary">Adicionar Gasto</button>
+                    </div>
+                </div>
+                <div style="padding: 0 30px 30px;">
+                    <div class="expense-item">
+                        <div class="expense-info">
+                            <div class="
+
+
+                            
