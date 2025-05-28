@@ -578,7 +578,7 @@
             <a href="expenses.html" class="nav-item" data-icon="💰" onclick="showSection('expenses')">Gastos</a>
             <a href="menu.html" class="nav-item" data-icon="🍽️" onclick="showSection('menu')">Cardápio</a>
             <a href="#reports" class="nav-item" data-icon="📈" onclick="showSection('reports')">Relatórios</a>
-            <a href="#settings" class="nav-item" data-icon="⚙️" onclick="showSection('settings')">Configurações</a>
+            <a href="teste.html" class="nav-item" data-icon="⚙️" onclick="showSection('settings')">Configurações</a>
             <a href="index.html" class="nav-item" data-icon="◀️" onclick="showSection('settings')">Voltar</a>
         </nav>
     </aside>
@@ -603,7 +603,7 @@
                         <div class="stats-icon">💰</div>
                         <div class="stats-trend trend-up">+12%</div>
                     </div>
-                    <div class="stats-value">R$ 2.845</div>
+                    <div id="faturamento-dia">Carregando...</div>
                     <div class="stats-label">Faturamento Hoje</div>
                 </div>
 
@@ -736,7 +736,8 @@
                                 <td><strong>R$ 39,80</strong></td>
                                 <td><span class="status-badge status-pending">Pendente</span></td>
                                 <td>
-                                    <button class="btn btn-primary" style="padding: 5px 10px; font-size: 0.8rem;">Confirmar</button>
+                                    <button class="btn btn-primary"
+                                        style="padding: 5px 10px; font-size: 0.8rem;">Confirmar</button>
                                 </td>
                             </tr>
                             <tr>
@@ -748,7 +749,8 @@
                                 <td><strong>R$ 16,90</strong></td>
                                 <td><span class="status-badge status-preparing">Preparando</span></td>
                                 <td>
-                                    <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.8rem;">Detalhes</button>
+                                    <button class="btn btn-secondary"
+                                        style="padding: 5px 10px; font-size: 0.8rem;">Detalhes</button>
                                 </td>
                             </tr>
                         </tbody>
@@ -872,7 +874,10 @@
                 <div style="padding: 0 30px 30px;">
                     <div class="expense-item">
                         <div class="expense-info">
-                            <div class="
+                         
+                              <script src="script/faturamento.js"></script>
+</body>
+</html>
 
 
                             
